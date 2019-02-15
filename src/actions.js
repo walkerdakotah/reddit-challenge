@@ -4,7 +4,10 @@ export const CLEAR_MESSAGE = 'CLEAR_MESSAGE';
 export const REDDIT_API_REQUEST = 'REDDIT_API_REQUEST';
 export const SORT_BY_NEWEST = 'SORT_BY_NEWEST';
 export const SORT_BY_TRENDING = 'SORT_BY_TRENDING';
+export const SORT_BY_TOP = 'SORT_BY_TOP';
+export const SORT_BY_BEST = 'SORT_BY_BEST';
 
+const subreddit = 'politics';
 // action creators
 export function showMessage() {
   return { type: SHOW_MESSAGE, message: 'Redux is up and going!' };
@@ -16,7 +19,7 @@ export function clearMessage() {
 
 export function getRedditApi() {
   return async function(dispatch) {
-    const res = await fetch(`https://www.reddit.com/r/copywriting.json`);
+    const res = await fetch(`https://www.reddit.com/r/${subreddit}.json`);
     const data = await res.json();
 
     // todo - action to catch request errors
@@ -31,7 +34,7 @@ export function getRedditApi() {
 export function sortByNewest() {
   return async function(dispatch) {
     const res = await fetch(
-      `https://www.reddit.com/r/copywriting/search.json?q=new`
+      `https://www.reddit.com/r/${subreddit}/search.json?q=new`
     );
     const data = await res.json();
 
@@ -45,7 +48,7 @@ export function sortByNewest() {
 export function sortByTrending() {
   return async function(dispatch) {
     const res = await fetch(
-      `https://www.reddit.com/r/copywriting/search.json?q=hot`
+      `https://www.reddit.com/r/${subreddit}/search.json?q=hot`
     );
     const data = await res.json();
 
@@ -53,6 +56,27 @@ export function sortByTrending() {
     dispatch({
       type: SORT_BY_TRENDING,
       posts: data.data.children,
+    });
+  };
+}
+export function sortByTop() {
+  return async function(dispatch) {
+    const res = await fetch(`https://www.reddit.com/r/${subreddit}/top`);
+    const data = await res.json();
+
+    // todo - action to catch request errors
+    dispatch({
+      type: SORT_BY_TOP,
+      posts: data.data.children,
+    });
+  };
+}
+export function sortByBest(posts) {
+  return async function(dispatch) {
+    const sortedPosts = posts.sort((a, b) => a.data.ups - b.data.ups);
+    dispatch({
+      type: SORT_BY_BEST,
+      posts: sortedPosts,
     });
   };
 }

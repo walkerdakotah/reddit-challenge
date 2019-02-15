@@ -2,28 +2,31 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getRedditApi, sortByNewest, sortByTrending } from './actions';
+import {
+  getRedditApi,
+  sortByNewest,
+  sortByTrending,
+  sortByTop,
+  sortByBest,
+} from './actions';
 
-import logo from './logo.svg';
+import logo from './logo.png';
 import './App.css';
 import styled from 'styled-components';
 import RedditPost from './RedditPost';
 
-// import Message from './Message';
-
 class App extends Component {
-  componentDidMount() {
-    // getRedditApi();
-  }
   render() {
     const {
-      message,
       subreddit,
       posts,
       getRedditApi,
       sortByNewest,
       sortByTrending,
+      sortByTop,
+      sortByBest,
     } = this.props;
+    console.log(posts);
 
     return (
       <div className="App">
@@ -36,12 +39,17 @@ class App extends Component {
         </header>
         <img src={logo} className="App-logo" alt="logo" />
         <ButtonGroup>
-          {' '}
           <Button onClick={() => sortByNewest()} type="button">
             get newest
           </Button>
           <Button onClick={() => sortByTrending()} type="button">
             get trending
+          </Button>
+          <Button onClick={() => sortByTop()} type="button">
+            get top posts
+          </Button>
+          <Button onClick={() => sortByBest(posts)} type="button">
+            sort by score
           </Button>
         </ButtonGroup>
         <div>
@@ -68,7 +76,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ sortByNewest, sortByTrending, getRedditApi }, dispatch);
+  bindActionCreators(
+    { sortByBest, sortByTop, sortByNewest, sortByTrending, getRedditApi },
+    dispatch
+  );
 
 export default connect(
   mapStateToProps,
