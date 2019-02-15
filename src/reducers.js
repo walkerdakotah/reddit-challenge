@@ -1,7 +1,7 @@
 import { SHOW_MESSAGE, CLEAR_MESSAGE } from './actions';
 
 const initialState = {
-  text: '',
+  message: '',
 };
 
 export default function redditApp(state = initialState, action) {
@@ -9,12 +9,12 @@ export default function redditApp(state = initialState, action) {
     case SHOW_MESSAGE:
       return {
         ...state,
-        text: action.text,
+        message: action.message,
       };
     case CLEAR_MESSAGE:
       return {
         ...state,
-        text: action.text,
+        message: action.message,
       };
     default:
       return state;

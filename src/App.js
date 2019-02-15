@@ -1,61 +1,48 @@
 import React, { Component } from 'react';
-import { Provider } from 'react-redux';
 
-import store from './store';
+import { connect } from 'react-redux';
+import { showMessage, clearMessage } from './actions';
+
 import logo from './logo.svg';
 import './App.css';
-
 import styled from 'styled-components';
-import { showMessage, clearMessage } from './actions';
+import { bindActionCreators } from '../../../Library/Caches/typescript/3.3/node_modules/redux';
+
+// import Message from './Message';
 
 class App extends Component {
   render() {
-    console.log('get store', store.getState());
-
+    const { message, showMessage, clearMessage } = this.props;
     return (
-      <Provider store={store}>
-        <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <p>
-              Edit <code>src/App.js</code> and save to reload.
-            </p>
-            <a
-              className="App-link"
-              href="https://reactjs.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn React
-            </a>
-            <ButtonGroup>
-              <Button
-                onClick={() => store.dispatch(showMessage())}
-                type="button"
-              >
-                show message
-              </Button>
-              <Button
-                onClick={() => store.dispatch(clearMessage())}
-                type="button"
-              >
-                clear message
-              </Button>
-              <Button
-                onClick={() => console.log(store.getState())}
-                type="button"
-              >
-                get state
-              </Button>
-            </ButtonGroup>
-          </header>
-        </div>
-      </Provider>
+      <div className="App">
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <p>{message}</p>
+          <ButtonGroup>
+            <Button onClick={() => showMessage()} type="button">
+              show message
+            </Button>
+            <Button onClick={() => clearMessage()} type="button">
+              clear message
+            </Button>
+          </ButtonGroup>
+        </header>
+      </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  message: state.message,
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ showMessage, clearMessage }, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
 
 const Button = styled.button`
   background: #fff;
