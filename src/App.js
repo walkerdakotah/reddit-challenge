@@ -1,32 +1,61 @@
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
-import { showMessage, clearMessage } from './actions';
+import { bindActionCreators } from 'redux';
+import { getRedditApi, sortByNewest, sortByTrending } from './actions';
 
 import logo from './logo.svg';
 import './App.css';
 import styled from 'styled-components';
-import { bindActionCreators } from '../../../Library/Caches/typescript/3.3/node_modules/redux';
+import RedditPost from './RedditPost';
 
 // import Message from './Message';
 
 class App extends Component {
+  componentDidMount() {
+    // getRedditApi();
+  }
   render() {
-    const { message, showMessage, clearMessage } = this.props;
+    const {
+      message,
+      subreddit,
+      posts,
+      getRedditApi,
+      sortByNewest,
+      sortByTrending,
+    } = this.props;
+
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>{message}</p>
           <ButtonGroup>
-            <Button onClick={() => showMessage()} type="button">
-              show message
-            </Button>
-            <Button onClick={() => clearMessage()} type="button">
-              clear message
+            <Button onClick={() => getRedditApi()} type="button">
+              get some reddit stuff
             </Button>
           </ButtonGroup>
         </header>
+        <img src={logo} className="App-logo" alt="logo" />
+        <ButtonGroup>
+          {' '}
+          <Button onClick={() => sortByNewest()} type="button">
+            get newest
+          </Button>
+          <Button onClick={() => sortByTrending()} type="button">
+            get trending
+          </Button>
+        </ButtonGroup>
+        <div>
+          <h1>Currently Viewing:{subreddit && `  r/${subreddit}`}</h1>
+          {posts && (
+            <PostList>
+              {posts.map(post => {
+                let singlePost = post.data;
+
+                return <RedditPost key={singlePost.id} post={singlePost} />;
+              })}
+            </PostList>
+          )}
+        </div>
       </div>
     );
   }
@@ -34,10 +63,12 @@ class App extends Component {
 
 const mapStateToProps = state => ({
   message: state.message,
+  subreddit: state.subreddit,
+  posts: state.posts,
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ showMessage, clearMessage }, dispatch);
+  bindActionCreators({ sortByNewest, sortByTrending, getRedditApi }, dispatch);
 
 export default connect(
   mapStateToProps,
@@ -53,4 +84,9 @@ const Button = styled.button`
 
 const ButtonGroup = styled.div`
   display: flex;
+`;
+
+const PostList = styled.ul`
+  text-align: left;
+  list-style: none;
 `;
